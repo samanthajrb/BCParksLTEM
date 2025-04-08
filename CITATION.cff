@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: BCParks_LTEM
+message: Please cite using this metadata.
+type: dataset
+authors:
+  - given-names: Olivia
+    family-names: Murphy
+    email: oliviamurphy400@gmail.com
+    affiliation: Simon Fraser University
+  - given-names: Samantha
+    family-names: Broadley
+    email: samanthajrb@gmail.com
+    affiliation: Simon Fraser University
+  - given-names: Kaitlin
+    family-names: Palmer
+    email: kpalmer@coa.edu
+    affiliation: Simon Fraser University
+  - given-names: Ruth
+    family-names: Joy
+    email: rjoy@sfu.ca
+    affiliation: Simon Fraser University
+repository-code: 'https://github.com/samanthajrb/BCParks_LTEM'
+abstract: >-
+  This repository contains the data files, R scripts, output
+  files and figures used or created during the analysis of
+  the BC Parks Long-Term Ecological Monitoring Project data
+  summary and analysis (2024-2025).
+license: Apache-2.0
