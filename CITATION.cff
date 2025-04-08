@@ -19,7 +19,7 @@ authors:
     family-names: Joy
     email: rjoy@sfu.ca
     affiliation: Simon Fraser University
-repository-code: 'https://github.com/samanthajrb/BCParks_LTEM'
+repository-code: 'https://github.com/samanthajrb/BCParksLTEM'
 abstract: >-
   This repository contains the data files, R scripts, output
   files and figures used or created during the analysis of
