@@ -125,6 +125,9 @@ red.data = AMPH.months %>%
   distinct(.) %>%
   mutate(
     `y_mid` = case_when(is.surveyed == 1 ~ 136.5),
+    `y_mid_apr` = case_when(is.surveyed == 1 ~ 106),
+    `y_mid_june` = case_when(is.surveyed == 1 ~ 167),
+    `FillGroup2` = case_when(is.surveyed == 1 ~ "Visual Guide for AprilJune"),
     `FillGroup` = case_when(y_mid == 136.5 ~ "Visual Guide for May")
   ) %>%
   filter(Survey.Status != "No Survey Conducted")
@@ -136,8 +139,10 @@ AMPH.shp.labs = c("Circle" = str_wrap("Survey Completed", width = 12), "Square" 
 
 # Define legend labels
 AMPH.timing.fill = c("Visual Guide for May" = "#CC6677",
+                     "Visual Guide for AprilJune" = "#CC6677",
                      "No Survey Conducted" = "gray90")
 redline.lab = c(str_wrap("Visual Guide for May *", width = 12),
+                str_wrap("Preferred Survey Months", width = 13), 
                 str_wrap("No Survey Conducted", width = 16))
 
 # Define file name for plot png
@@ -155,7 +160,30 @@ plot_file = file.path(output_folder_plots, plot.filename)
 
 plot.v1 = ggplot(AMPH.data.timing,
                  aes(x = Year, y = y_mid)) +
-#  Add red tiles as visual guide for May
+  # Add tiles as visual guide for April/June
+  geom_tile(
+    data = red.data,
+    aes(x = Year, 
+        # y = y_mid,
+        y = y_mid_apr,
+        fill = FillGroup2),
+    inherit.aes = FALSE,
+    width = 1,
+    height = 28.99,
+    alpha = 0.2
+  ) +
+  # Add tiles as visual guide for April/June
+  geom_tile(
+    data = red.data,
+    aes(x = Year,
+        y = y_mid_june,
+        fill = FillGroup2),
+    inherit.aes = FALSE,
+    width = 1,
+    height = 28.99,
+    alpha = 0.2
+  ) +
+#  Add red tiles as visual guide for May - background
   geom_tile(
     data = red.data,
     aes(x = Year,
@@ -164,7 +192,18 @@ plot.v1 = ggplot(AMPH.data.timing,
     inherit.aes = FALSE,
     width = 1,
     height = 29.99,
-    alpha = 0.4
+    alpha = 0.2
+  ) +
+  #  Add red tiles as visual guide for May - thinner
+  geom_tile(
+    data = red.data,
+    aes(x = Year,
+        y = y_mid,
+        fill = FillGroup),
+    inherit.aes = FALSE,
+    width = 1,
+    height = 14,
+    alpha = 0.6
   ) +
   # Add horizontal lines for month borders
   geom_hline(
@@ -175,7 +214,7 @@ plot.v1 = ggplot(AMPH.data.timing,
   geom_point(
     data = AMPH.months.long,
     aes(shape = "Circle"),
-    size = 1.5,
+    size = 1.75,
     colour = "black"
   ) +
   # Plot selected (EC) surveys as squares
@@ -199,6 +238,7 @@ plot.v1 = ggplot(AMPH.data.timing,
     values = AMPH.timing.fill,
     name = "Legend",
     breaks = c("Visual Guide for May", 
+               "Visual Guide for AprilJune",
                "No Survey Conducted"),
     labels = redline.lab
   ) +
@@ -248,7 +288,7 @@ plot.v1 = ggplot(AMPH.data.timing,
     panel.grid.minor.x = element_line(color = "gray70", linewidth = 0.3),
     panel.grid.major.y = element_line(color = "transparent", linewidth = 0),
     panel.grid.minor.y = element_line(color = "transparent", linewidth = 0),
-    axis.ticks.y = element_line(color = "gray70", size = 0.5),  # Adds black tick marks
+    axis.ticks.y = element_line(color = "gray70", linewidth = 0.5),  # Adds black tick marks
     axis.ticks.length = unit(0.1, "cm"),  # Adjust the length of the tick marks
     plot.margin = unit(c(7.5,5.5,5.5,7.5), "pt"),
     panel.spacing.x = unit(10, "pt"),
