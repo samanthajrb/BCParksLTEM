@@ -125,6 +125,9 @@ red.data = WF.months %>%
   distinct(.) %>%
   mutate(
     `y_mid` = case_when(is.surveyed == 1 ~ 167),
+    `y_mid_may` = case_when(is.surveyed == 1 ~ 136.5),
+    `y_mid_july` = case_when(is.surveyed == 1 ~ 197.5),
+    `FillGroup2` = case_when(is.surveyed == 1 ~ "Visual Guide for MayJuly"),
     `FillGroup` = case_when(y_mid == 167 ~ "Visual Guide for June")
   ) %>%
   filter(Survey.Status != "No Survey Conducted")
@@ -136,8 +139,10 @@ WF.shp.labs = c("Circle" = str_wrap("Survey Completed", width = 12), "Square" = 
 
 # Define legend labels
 WF.timing.fill = c("Visual Guide for June" = "#CC6677",
+                   "Visual Guide for MayJuly" = "#CC6677",
                      "No Survey Conducted" = "gray90")
-redline.lab = c(str_wrap("Visual Guide for June *", width = 12), 
+redline.lab = c(str_wrap("Visual Guide for June *", width = 12),
+                str_wrap("Months with Most Surveys", width = 12),
                 str_wrap("No Survey Conducted", width = 16))
 
 # Define file name for plot png
@@ -155,7 +160,30 @@ plot_file = file.path(output_folder_plots, plot.filename)
 
 plot.v1 = ggplot(WF.data.timing,
                  aes(x = Year, y = y_mid)) +
-  #  Add red tiles as visual guide for June
+  # Add tiles as visual guide for May/July
+  geom_tile(
+    data = red.data,
+    aes(x = Year, 
+        # y = y_mid,
+        y = y_mid_may,
+        fill = FillGroup2),
+    inherit.aes = FALSE,
+    width = 1,
+    height = 29.99,
+    alpha = 0.2
+  ) +
+  # Add tiles as visual guide for May/July
+  geom_tile(
+    data = red.data,
+    aes(x = Year,
+        y = y_mid_july,
+        fill = FillGroup2),
+    inherit.aes = FALSE,
+    width = 1,
+    height = 29.99,
+    alpha = 0.2
+  ) +
+  #  Add red tiles as visual guide for June - background
   geom_tile(
     data = red.data,
     aes(x = Year,
@@ -164,9 +192,18 @@ plot.v1 = ggplot(WF.data.timing,
     inherit.aes = FALSE,
     width = 1,
     height = 28.99,
-    # height = 8,
-    alpha = 0.4
-    # alpha = 0.4
+    alpha = 0.2
+  ) +
+  #  Add red tiles as visual guide for June - thinner
+  geom_tile(
+    data = red.data,
+    aes(x = Year,
+        y = y_mid,
+        fill = FillGroup),
+    inherit.aes = FALSE,
+    width = 1,
+    height = 14,
+    alpha = 0.6
   ) +
   # Add horizontal lines for month borders
   geom_hline(
@@ -177,7 +214,7 @@ plot.v1 = ggplot(WF.data.timing,
   geom_point(
     data = WF.months.long,
     aes(shape = "Circle"),
-    size = 1.5,
+    size = 1.75,
     colour = "black"
   ) +
   # Plot selected (EC) surveys as squares
@@ -201,6 +238,7 @@ plot.v1 = ggplot(WF.data.timing,
     values = WF.timing.fill,
     name = "Legend",
     breaks = c("Visual Guide for June", 
+               "Visual Guide for MayJuly",
                "No Survey Conducted"),
     labels = redline.lab
   ) +
@@ -250,7 +288,7 @@ plot.v1 = ggplot(WF.data.timing,
     panel.grid.minor.x = element_line(color = "gray70", linewidth = 0.3),
     panel.grid.major.y = element_line(color = "transparent", linewidth = 0),
     panel.grid.minor.y = element_line(color = "transparent", linewidth = 0),
-    axis.ticks.y = element_line(color = "gray70", size = 0.5),  # Adds black tick marks
+    axis.ticks.y = element_line(color = "gray70", linewidth = 0.5),  # Adds black tick marks
     axis.ticks.length = unit(0.1, "cm"),  # Adjust the length of the tick marks
     plot.margin = unit(c(7.5,5.5,5.5,7.5), "pt"),
     panel.spacing.x = unit(10, "pt"),
@@ -259,7 +297,7 @@ plot.v1 = ggplot(WF.data.timing,
   )
 
 # Create annotation for further explanation
-legend_annotation = grid::textGrob("  * Median of preferred\n     survey months\n** Survey selected for\n    effort standardization",
+legend_annotation = grid::textGrob("  * Median of months\n     with most surveys\n** Survey selected for\n    effort standardization",
                                    x = 0.87, y = 0.035, 
                                    hjust = 0, vjust = 0.5, 
                                    gp = grid::gpar(fontsize = 8))
